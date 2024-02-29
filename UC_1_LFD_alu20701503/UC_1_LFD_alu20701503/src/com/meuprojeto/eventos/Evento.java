@@ -20,10 +20,6 @@ public class Evento {
         this.descricao = descricao;
     }
 
-    public Evento(String nome2, String data, String local, int vagas) {
-        // TODO Auto-generated constructor stub
-    }
-
     // Getters
     public String getNome() {
         return nome;
@@ -70,7 +66,7 @@ public class Evento {
         this.descricao = descricao;
     }
 
-    // Métodos existentes para adicionar e remover participantes
+    // Métodos para adicionar e remover participantes
     public void adicionarParticipante(Usuario usuario) {
         participantes.add(usuario);
     }

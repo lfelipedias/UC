@@ -122,63 +122,68 @@ public class Main {
     private void inscreverEvento() {
         System.out.println("Inscrever-se em um evento:");
         listarEventos(); // Mostra a lista de eventos para o usuário
-
+    
         System.out.print("Digite o nome do evento em que deseja se inscrever: ");
         String nomeEvento = scanner.nextLine();
-
+    
         // Procura o evento pelo nome
         Evento evento = gerenciadorEventos.buscarEventoPorNome(nomeEvento);
         if (evento == null) {
             System.out.println("Evento não encontrado.");
             return;
         }
-
+    
         System.out.println("Inscrevendo no evento: " + evento.getNome());
         System.out.print("Digite seu nome: ");
         String nomeUsuario = scanner.nextLine();
-
+    
         System.out.print("Digite seu email: ");
         String emailUsuario = scanner.nextLine();
-
+    
         System.out.print("Digite sua cidade: ");
         String cidadeUsuario = scanner.nextLine();
-
+    
         Usuario usuario = new Usuario(nomeUsuario, emailUsuario, cidadeUsuario);
         evento.adicionarParticipante(usuario); // Adiciona o usuário à lista de participantes
-
+    
+        gerenciadorEventos.salvarVinculoEventoUsuario(nomeEvento, emailUsuario); // Salva o vínculo em um arquivo
+    
         System.out.println("Inscrição realizada com sucesso!");
     }
-
+    
     private void cancelarInscricaoEvento() {
         System.out.println("Cancelar inscrição de um evento:");
         listarEventos(); // Mostra a lista de eventos para o usuário
-
+    
         System.out.print("Digite o nome do evento do qual deseja cancelar a inscrição: ");
         String nomeEvento = scanner.nextLine();
-
+    
         // Procura o evento pelo nome
         Evento evento = gerenciadorEventos.buscarEventoPorNome(nomeEvento);
         if (evento == null) {
             System.out.println("Evento não encontrado.");
             return;
         }
-
+    
         System.out.print("Digite seu email: ");
         String emailUsuario = scanner.nextLine();
-
+    
         // Procura o usuário pelo email entre os participantes do evento
         Usuario usuario = evento.getParticipantes().stream()
                 .filter(u -> u.getEmail().equalsIgnoreCase(emailUsuario))
                 .findFirst()
                 .orElse(null);
-
+    
         if (usuario == null) {
             System.out.println("Usuário não encontrado na lista de participantes do evento.");
             return;
         }
-
+    
         // Remove o usuário da lista de participantes do evento
         evento.removerParticipante(usuario);
+    
+        gerenciadorEventos.removerVinculoEventoUsuario(nomeEvento, emailUsuario); // Remove o vínculo do arquivo
+    
         System.out.println("Inscrição cancelada com sucesso!");
     }
 
