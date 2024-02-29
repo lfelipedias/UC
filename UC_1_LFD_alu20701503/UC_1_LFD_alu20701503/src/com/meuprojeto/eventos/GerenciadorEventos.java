@@ -32,5 +32,10 @@ public class GerenciadorEventos {
                 .orElse(null);
     }
 
+    // Método para retornar todos os eventos
+    public List<Evento> getTodosEventos() {
+        return eventos;
+    }
+
     // Implementações adicionais conforme necessário
 }
