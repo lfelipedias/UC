@@ -1,6 +1,8 @@
 package com.meuprojeto.eventos;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -86,8 +88,20 @@ public class Main {
         int categoriaIndex = Integer.parseInt(scanner.nextLine()) - 1;
         CategoriaEvento categoria = CategoriaEvento.values()[categoriaIndex];
 
-        System.out.print("Data e hora do evento (formato: YYYY-MM-DDTHH:MM): ");
-        LocalDateTime dataHora = LocalDateTime.parse(scanner.nextLine());
+        System.out.print("Data e hora do evento (formato: YYYY-MM-DD HH:MM): ");
+        String dataHoraStr = scanner.nextLine();
+
+        // Cria um DateTimeFormatter com o padrão esperado
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        // Converte a string de entrada para um LocalDateTime usando o formatador
+        LocalDateTime dataHora;
+        try {
+            dataHora = LocalDateTime.parse(dataHoraStr, formatter);
+        } catch (DateTimeParseException e) {
+            System.out.println("A data e hora devem estar no formato 'YYYY-MM-DD HH:MM'.");
+            return; // Sai do método se a data e hora estiverem no formato incorreto
+        }
 
         System.out.print("Descrição do evento: ");
         String descricao = scanner.nextLine();
