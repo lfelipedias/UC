@@ -3,20 +3,36 @@ package com.meuprojeto.eventos;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Objects;
 
 public class Usuario {
     private String nome;
     private String email;
     private String cidade;
 
+    // Construtor
     public Usuario(String nome, String email, String cidade) {
         this.nome = nome;
         this.email = email;
         this.cidade = cidade;
     }
 
-    // Getters e setters
+    // Método equals sobrescrito para comparação baseada em email
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Usuario usuario = (Usuario) obj;
+        return Objects.equals(email, usuario.email);
+    }
 
+    // Método hashCode sobrescrito baseado em email
+    @Override
+    public int hashCode() {
+        return Objects.hash(email);
+    }
+
+    // Getters e setters
     public String getNome() {
         return nome;
     }

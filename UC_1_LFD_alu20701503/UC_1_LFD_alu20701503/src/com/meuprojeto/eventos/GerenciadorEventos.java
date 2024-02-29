@@ -2,6 +2,7 @@ package com.meuprojeto.eventos;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
@@ -72,6 +73,21 @@ public class GerenciadorEventos {
         return sb.toString();
     }
 
+    // Método para listar todos os eventos, ordenados por data e hora
+    public List<Evento> getEventosOrdenados() {
+        return eventos.stream()
+                .sorted(Comparator.comparing(Evento::getDataHora))
+                .collect(Collectors.toList());
+    }
+
+    // Método para verificar se um evento está ocorrendo no momento
+    public List<Evento> getEventosOcorrendoAgora() {
+        LocalDateTime agora = LocalDateTime.now();
+        return eventos.stream()
+                .filter(evento -> evento.getDataHora().isBefore(agora) || evento.getDataHora().isEqual(agora))
+                .collect(Collectors.toList());
+    }
+    
     public List<Evento> buscarEventosPorCategoria(CategoriaEvento categoria) {
         return eventos.stream()
                 .filter(evento -> evento.getCategoria() == categoria)
@@ -110,23 +126,14 @@ public class GerenciadorEventos {
             writer.newLine();
         } catch (IOException e) {
             System.err.println("Erro ao salvar o vínculo entre evento e usuário em arquivo: " + e.getMessage());
+        } finally {
+            // Atualiza a lista de vínculos após adicionar um novo vínculo para garantir que a memória esteja sincronizada com o arquivo
+            carregarVinculos();
         }
     }
-
+        
     public void removerVinculoEventoUsuario(String nomeEvento, String emailUsuario) {
-        vinculos.removeIf(vinculo -> vinculo.getNomeEvento().equals(nomeEvento)
-                && vinculo.getEmailUsuario().equals(emailUsuario));
-
-        Evento evento = buscarEventoPorNome(nomeEvento);
-        if (evento != null) {
-            // Crie uma instância de Usuario utilizando o construtor apropriado
-            Usuario usuario = new Usuario(emailUsuario); // Se o construtor de Usuario exigir apenas o email
-            evento.removerParticipante(usuario); // Remova o usuário do evento
-            salvarEventos();
-        } else {
-            System.out.println("Evento não encontrado.");
-        }
-
+        vinculos.removeIf(vinculo -> vinculo.getNomeEvento().equals(nomeEvento) && vinculo.getEmailUsuario().equals(emailUsuario));
         salvarVinculos();
     }
 
@@ -179,6 +186,7 @@ public class GerenciadorEventos {
     }
 
     public class Usuario {
+        @SuppressWarnings("unused")
         private String email;
 
         public Usuario(String email) {
