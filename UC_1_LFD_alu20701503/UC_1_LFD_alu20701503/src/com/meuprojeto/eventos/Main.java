@@ -3,6 +3,8 @@ package com.meuprojeto.eventos;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -22,8 +24,9 @@ public class Main {
             System.out.println("1 - Listar Eventos");
             System.out.println("2 - Adicionar Evento");
             System.out.println("3 - Inscrever-se em um Evento");
-            System.out.println("4 - Cancelar Inscrição em um Evento");
-            System.out.println("5 - Sair");
+            System.out.println("4 - Visualizar eventos inscritos");
+            System.out.println("5 - Cancelar Inscrição em um Evento");
+            System.out.println("6 - Sair");
             int opcao = scanner.nextInt();
             scanner.nextLine(); // Consumir a nova linha
 
@@ -38,9 +41,12 @@ public class Main {
                     inscreverEvento();
                     break;
                 case 4:
-                    cancelarInscricaoEvento();
+                    mostrarEventosInscritos();
                     break;
                 case 5:
+                    cancelarInscricaoEvento();
+                    break;
+                case 6:
                     sair = true;
                     break;
                 default:
@@ -50,7 +56,9 @@ public class Main {
     }
 
     private void listarEventos() {
-        List<Evento> eventos = gerenciadorEventos.getTodosEventos();
+        List<Evento> eventos = new ArrayList<>(gerenciadorEventos.getTodosEventos());
+        eventos.sort(Comparator.comparing(Evento::getDataHora)); // Ordena eventos por data e hora
+
         if (eventos.isEmpty()) {
             System.out.println("Não há eventos cadastrados no momento.");
         } else {
@@ -172,6 +180,24 @@ public class Main {
         // Remove o usuário da lista de participantes do evento
         evento.removerParticipante(usuario);
         System.out.println("Inscrição cancelada com sucesso!");
+    }
+
+    private void mostrarEventosInscritos() {
+        System.out.print("Digite seu email para ver os eventos inscritos: ");
+        String emailUsuario = scanner.nextLine();
+
+        List<Evento> eventosInscritos = gerenciadorEventos.getEventosInscritosUsuario(emailUsuario);
+        if (eventosInscritos.isEmpty()) {
+            System.out.println("Você não está inscrito em nenhum evento.");
+        } else {
+            System.out.println("Você está inscrito nos seguintes eventos:");
+            for (Evento evento : eventosInscritos) {
+                System.out.println("--------------------------------------------------");
+                System.out.println("Nome: " + evento.getNome());
+                System.out.println("Data e Hora: " + evento.getDataHora());
+                // Exibir mais detalhes conforme necessário
+            }
+        }
     }
 
     public static void main(String[] args) {

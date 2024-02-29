@@ -37,5 +37,12 @@ public class GerenciadorEventos {
         return eventos;
     }
 
+    public List<Evento> getEventosInscritosUsuario(String emailUsuario) {
+        return eventos.stream()
+                .filter(evento -> evento.getParticipantes().stream()
+                        .anyMatch(participante -> participante.getEmail().equalsIgnoreCase(emailUsuario)))
+                .collect(Collectors.toList());
+    }
+
     // Implementações adicionais conforme necessário
 }
